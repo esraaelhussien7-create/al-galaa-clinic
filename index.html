@@ -259,9 +259,9 @@ function App() {
       try {
         const profileSnap = await db.collection("users").doc(fbUser.uid).get();
         const profile = profileSnap.exists ? profileSnap.data() : { role: "doctor", name: fbUser.email };
-        setCurrentUser({ uid: fbUser.uid, email: fbUser.email, ...profile });
+        setCurrentUser({ uid: fbUser.uid, email: fbUser.email, ...profile, _debugUid: fbUser.uid, _debugExists: profileSnap.exists, _debugErr: "" });
       } catch (e) {
-        setCurrentUser({ uid: fbUser.uid, email: fbUser.email, role: "doctor", name: fbUser.email });
+        setCurrentUser({ uid: fbUser.uid, email: fbUser.email, role: "doctor", name: fbUser.email, _debugUid: fbUser.uid, _debugExists: "error", _debugErr: (e && e.message) || String(e) });
       }
       setAuthLoading(false);
     });
@@ -325,6 +325,7 @@ function App() {
             <div>
               <div className="font-display text-base leading-tight text-slate-800">Al Galaa Clinic</div>
               <div className="text-[11px] text-slate-500 leading-tight">{isAdmin ? "Administrator" : currentUser.name} · role: {String(currentUser.role)}</div>
+              <div className="text-[9px] text-rose-500 leading-tight break-all max-w-xs">uid: {currentUser._debugUid} · found: {String(currentUser._debugExists)} {currentUser._debugErr ? `· err: ${currentUser._debugErr}` : ""}</div>
             </div>
           </div>
           <div className="flex items-center gap-1">
